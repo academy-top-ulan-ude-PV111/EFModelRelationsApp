@@ -16,7 +16,7 @@ namespace EFModelRelationsApp
         public DateTime BirthDate { set; get; }
         //public string CompanyName { set; get; } // свойство - внешний ключ
         //[ForeignKey("CompanyKeyInfo")]
-        public int CompanyId { set; get; } // свойство - внешний ключ
+        public int? CompanyId { set; get; } // свойство - внешний ключ
         public Company? Company { set; get; } // навигационное свойство
     }
 
@@ -47,7 +47,7 @@ namespace EFModelRelationsApp
             // установка каскадного удаления - обнуления
             //modelBuilder.Entity<Employe>()
             //            .Property(e => e.CompanyId)
-            //            .HasConversion()
+            //            
 
 
             modelBuilder.Entity<Employe>()
