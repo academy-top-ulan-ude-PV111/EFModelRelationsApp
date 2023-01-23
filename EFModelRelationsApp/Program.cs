@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EFModelRelationsApp
 {
@@ -13,7 +14,9 @@ namespace EFModelRelationsApp
         public int Id { set; get; }
         public string? Name { set; get; } = null!;
         public DateTime BirthDate { set; get; }
-        //public int CompanyId { set; get; } // свойство - внешний ключ
+        //public string CompanyName { set; get; } // свойство - внешний ключ
+        //[ForeignKey("CompanyKeyInfo")]
+        public int CompanyId { set; get; } // свойство - внешний ключ
         public Company? Company { set; get; } // навигационное свойство
     }
 
@@ -30,6 +33,27 @@ namespace EFModelRelationsApp
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=CompaniesDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // настройка внешнего ключа для любого свойства
+            //modelBuilder.Entity<Employe>()
+            //            .HasOne(e => e.Company)
+            //            .WithMany(c => c.Employes)
+            //            .HasForeignKey(e => e.CompanyName)
+            //            .HasPrincipalKey(c => c.Title);
+
+            // установка каскадного удаления - обнуления
+            //modelBuilder.Entity<Employe>()
+            //            .Property(e => e.CompanyId)
+            //            .HasConversion()
+
+
+            modelBuilder.Entity<Employe>()
+                        .HasOne(e => e.Company)
+                        .WithMany(c => c.Employes)
+                        .OnDelete(DeleteBehavior.SetNull);
         }
     }
 
@@ -114,7 +138,17 @@ namespace EFModelRelationsApp
                 {
                     Console.WriteLine($"{employe.Name} {employe.Company?.Title}");
                 }
-                
+
+                var comp = context.Companies.FirstOrDefault();
+                if (comp is not null)
+                    context.Companies.Remove(comp);
+                context.SaveChanges();
+
+                Console.WriteLine("------- After Remove -------");
+                foreach (Employe employe in context.Employes)
+                {
+                    Console.WriteLine($"{employe.Name} {employe.Company?.Title}");
+                }
             }
         }
     }
