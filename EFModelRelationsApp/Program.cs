@@ -47,8 +47,7 @@ namespace EFModelRelationsApp
             // установка каскадного удаления - обнуления
             //modelBuilder.Entity<Employe>()
             //            .Property(e => e.CompanyId)
-            //            
-
+            //            .IsRequired(false);
 
             modelBuilder.Entity<Employe>()
                         .HasOne(e => e.Company)
@@ -139,10 +138,10 @@ namespace EFModelRelationsApp
                     Console.WriteLine($"{employe.Name} {employe.Company?.Title}");
                 }
 
-                var comp = context.Companies.FirstOrDefault();
-                if (comp is not null)
-                    context.Companies.Remove(comp);
-                context.SaveChanges();
+                //var comp = context.Companies.FirstOrDefault();
+                //if (comp is not null)
+                //    context.Companies.Remove(comp);
+                //context.SaveChanges();
 
                 Console.WriteLine("------- After Remove -------");
                 foreach (Employe employe in context.Employes)
